@@ -13,7 +13,7 @@ public class ProductService {
 	public ProductService() {
 		// Create new products
 		products.put("1", new Product("1", "Sofa", 249.99, "furniture", "A long, comfortable seat with a back and arms."));
-		products.put("2", new Product("2", "Yoga Mat ", 29.99, "furniture", "Non-slip, 6mm thickness."));
+		products.put("2", new Product("2", "Yoga Mat", 29.99, "furniture", "Non-slip, 6mm thickness."));
 		products.put("3", new Product("3", "Coffee Table ", 99.99, "furniture", "Small round table, made of wood."));
 		products.put("4", new Product("4", "Smartphone", 799.99, "electronic", "Latest model with 128GB storage."));
 		products.put("5", new Product("5", "Wireless Earbuds", 149.99, "electronic", "Noise cancelling, 20hr battery"));
