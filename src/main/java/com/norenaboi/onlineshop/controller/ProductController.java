@@ -5,7 +5,7 @@ import com.norenaboi.onlineshop.service.ProductService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
+import java.util.List;
 
 @RestController
 
@@ -19,27 +19,42 @@ public class ProductController {
     }
     
     @GetMapping
-    public ArrayList<Product> getAllProducts(){
+    public List<Product> getAllProducts(){
     	return productService.getAllProducts();
     }
     
-    @GetMapping("/{id}")
-    public Product getProductById(@PathVariable String id) {
+    @GetMapping("/{id}") // GET
+    public Product getProductById(@PathVariable Long id) {
 		return productService.getProductById(id);
 	}
     
-    @PostMapping
+    @PostMapping // POST
     public Product createProduct(@RequestBody Product product) {
     	return productService.createProduct(product);
     }
     
-    @PutMapping("/{id}")
-    public Product updateProduct(@PathVariable String id, @RequestBody Product product) {
+    @PutMapping("/{id}") // PUT
+    public Product updateProduct(@PathVariable Long id, @RequestBody Product product) {
     	return productService.updateProduct(id, product);
     }
     
-    @DeleteMapping("/{id}")
-    public boolean deleteProduct(@PathVariable String id) {
-    	return productService.deleteProduct(id);
+    @DeleteMapping("/{id}") // DELETE
+    public void deleteProduct(@PathVariable Long id) {
+    	productService.deleteProduct(id);
+    }
+    
+    @GetMapping("/search")
+    public List<Product> searchProducts(@RequestParam String name) {
+    	return productService.getProductsByName(name);
+    }
+    
+    @GetMapping("/price-range")
+    public List<Product> getProductsInRange( @RequestParam double min, @RequestParam double max) {
+        return productService.getProductsInPriceRange(min, max);
+    }
+    
+    @GetMapping("/category/{type}")
+    public List<Product> getProductsByCategory(@PathVariable String type) {
+        return productService.getProductsByType(type);
     }
 }
