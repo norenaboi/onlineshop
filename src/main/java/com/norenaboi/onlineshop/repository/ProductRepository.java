@@ -8,8 +8,7 @@ import java.util.List;
 
 @Repository
 public interface ProductRepository extends JpaRepository<Product, Long>{
-	List<Product> findByName(String name); // Find a product by its name
-	List<Product> findByNameContaining(String keyword); // Search a product with a string
+	List<Product> findByNameContaining(String keyword); // Search a product by a string
 	List<Product> findByPriceBetween(double minPrice, double maxPrice); // List products within the price range
-	List<Product> findByTypeOrderByPriceAsc(String type); // List products in certain categories
+	List<Product> findByTypeOrderById(String type); // List products in certain categories
 }

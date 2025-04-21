@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Online Shop</title>
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+
+<body>
+    <h1 class="header" style="margin-top:15px;">Online Shop</h1>
+    
+	<div class="main">
+		<a class="btn btn-primary btn-sm" th:href="@{/create}" style="margin: 10px;">
+			New Product
+		</a>
+		
+		<table id="table" class="table" style="margin-right:25px; margin-left:25px;">
+			<thead>
+				<tr>
+					<th>ID</th>
+					<th>Name</th>
+					<th>Price</th>
+					<th>Type</th>
+					<th>Description</th>
+				</tr>
+			</thead>
+			<tbody class="table-group-divider"> 
+				<tr class="tr-div" th:each="product : ${products}">
+					<td th:text="${product.id}"></td> 
+					<td th:text="${product.name}"></td>
+					<td th:text="${'$' + #numbers.formatDecimal(product.price, 1, 2)}"></td>
+					<td th:text="${product.type}"></td> 
+					<td th:text="${product.description}"></td> 
+					
+					<td style="white-space: nowrap">
+						<a class="btn btn-primary btn-sm" th:href="@{/edit/{id}(id=${product.id})}">Edit</a>
+						<a class="btn btn-danger btn-sm" th:href="@{/delete/{id}(id=${product.id})}" onclick="return confirm ('Are you sure?')">Delete</a>
+					</td>
+				</tr>
+			</tbody>
+		</table>
+	</div>
+	<div style="position:absolute; top:5%; right:5%; display:flex; align-items:center;">
+		<input id="searchInput" style="content:'Search for products'; height:29.2px; margin-right:6px;"></input>
+		<button id="searchButton" style="width:25.2px; height:25.2px; background:transparent; border:0px;">
+			<i class="fa-solid fa-magnifying-glass" style="padding:3px;"></i>
+		</button>
+	</div>
+    <a th:href="@{/api/products}" style="right:0; bottom:0; position:absolute; margin:25px; font-size:1.5em;">API</a>
+	<div class="type-btn-container column border" style="position:absolute; top:10%; right:5%; text-align: center; padding:10px;">
+		<button class="type-btn" id="furnitureButton" style="font-weight:bold;">Furniture</button>
+		<button class="type-btn" id="electronicButton" style="font-weight:bold;">Electronic</button>
+		<button class="type-btn" id="homekitchenButton" style="font-weight:bold;">Home/Kitchen</button>
+		<button class="type-btn" id="fashionButton" style="font-weight:bold;">Fashion</button>
+	</div>
+	<script>
+		document.addEventListener('DOMContentLoaded', function() {
+			const furnitureButton = document.getElementById('furnitureButton');
+			const electronicButton = document.getElementById('electronicButton');
+			const homekitchenButton = document.getElementById('homekitchenButton');
+			const fashionButton = document.getElementById('fashionButton');
+				
+		    const searchButton = document.getElementById('searchButton');
+		    const searchInput = document.getElementById('searchInput');
+			
+		    const originalTableBody = document.getElementById('table').innerHTML;
+	
+			furnitureButton.addEventListener('click', function() { sortByType("furniture"); });
+			electronicButton.addEventListener('click', function() { sortByType("electronic"); });
+			homekitchenButton.addEventListener('click', function() { sortByType("home_kitchen"); });
+			fashionButton.addEventListener('click', function() { sortByType("fashion"); });
+			
+			searchButton.addEventListener('click', performSearch);
+		    searchInput.addEventListener('keypress', function(e) { if (e.key === 'Enter') performSearch(); });
+
+		    function performSearch() {
+		        const searchTerm = searchInput.value.trim();
+		        if (!searchTerm) {
+		            document.getElementById('table').innerHTML = originalTableBody; return;
+		        }
+		        getByHRef(`/search?name=${encodeURIComponent(searchTerm)}`);
+			}
+			
+			function sortByType(type) {
+				getByHRef(`/api/products/type/${type}`)
+			}
+			
+			function getByHRef(href){
+			    fetch(href)
+		        .then(response => response.json())
+		        .then(products => {
+		            const table = document.getElementById('table');
+		            const tbody = table.querySelector('tbody');
+
+		            if (products.length === 0) {
+		                tbody.innerHTML = '<tr><td colspan="6" class="text-center">No products found</td></tr>';
+		                return;
+		            }
+
+		            let newTableBody = '';
+		            products.forEach(product => {
+		                newTableBody += `
+		                    <tr>
+		                        <td>${product.id}</td>
+		                        <td>${product.name}</td>
+		                        <td>$${product.price.toFixed(2)}</td>
+		                        <td>${product.type}</td>
+		                        <td>${product.description}</td>
+		                        <td style="white-space: nowrap">
+		                            <a class="btn btn-primary btn-sm" href="/edit/${product.id}">
+		                                Edit
+		                            </a>
+		                            <a class="btn btn-danger btn-sm" href="/delete/${product.id}" 
+		                               onclick="return confirm('Are you sure?')">
+		                                Delete
+		                            </a>
+		                        </td>
+		                    </tr>`;
+		            });
+
+		            tbody.innerHTML = newTableBody;
+		        })
+		        .catch(error => {
+		            console.error('Error:', error);
+		            document.getElementById('table').querySelector('tbody').innerHTML = 
+		                '<tr><td colspan="6" class="text-center">Error loading results</td></tr>';
+		        });
+			}
+		});
+	</script>
+</body>
+</html>
+
+<style>
+	.header {	
+		justify-content: center;
+		display: flex;
+		font-weight:bold;
+		font-family:"Calibri";
+	}
+	.fa-magnifying-glass:hover {
+		background-color: rgba(0, 0, 0, 0.2);
+		border-radius:8px;
+	}
+	.type-btn { background:transparent; border:0px; margin-block:1px;}
+	.type-btn:hover { background-color: rgba(0, 0, 0, 0.1); border-radius:8px; }
+</style>

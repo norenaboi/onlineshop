@@ -42,7 +42,7 @@ public class ProductService {
 		return productRepository.save(product);
 	}
 	
-	public Product updateProduct(Long id, Product product) { // PUT
+	public Product editProduct(Long id, Product product) { // PUT
 		Product existingProduct = getProductById(id);
 		existingProduct.setName(product.getName());
 		existingProduct.setPrice(product.getPrice());
@@ -59,19 +59,11 @@ public class ProductService {
 		return productRepository.findAll();
 	}
 	
-	public List<Product> getProductsByName(String name) {
-		return productRepository.findByName(name);
-	}
-	
-	public List<Product> getProductsInPriceRange(double min, double max) {
-		return productRepository.findByPriceBetween(min, max);
-	}
-	
 	public List<Product> getProductsByKeyword(String keyword) {
 		return productRepository.findByNameContaining(keyword);
 	}
 		
 	public List<Product> getProductsByType(String type) {
-		return productRepository.findByTypeOrderByPriceAsc(type);
+		return productRepository.findByTypeOrderById(type);
 	}
 }
