@@ -79,7 +79,7 @@
 		        if (!searchTerm) {
 		            document.getElementById('table').innerHTML = originalTableBody; return;
 		        }
-		        getByHRef(`/search?name=${encodeURIComponent(searchTerm)}`);
+		        getByHRef(`api/products/search?name=${encodeURIComponent(searchTerm)}`);
 			}
 			
 			function sortByType(type) {
