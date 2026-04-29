@@ -24,7 +24,7 @@ A simple online shop web application built with Spring Boot. It allows users to 
 1. **Clone the repository**
 
    ```
-   git clone https://github.com/norenaboi/onlineshop
+   git clone https://github.com/norenaboi/onlineshop -b interface
    cd onlineshop
    ```
 
